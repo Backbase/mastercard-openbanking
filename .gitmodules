@@ -1,0 +1,6 @@
+[submodule "mastercard-integration-service"]
+	path = mastercard-integration-service
+	url = git@github.com:Backbase/mastercard-integration-service.git
+[submodule "authorization-server"]
+	path = authorization-server
+	url = git@github.com:Backbase/authorization-server.git

@@ -1,0 +1,182 @@
+bootstrap:
+  # Used by product-catalog-task
+  productCatalog:
+    productTypes:
+      - productKindName: "currentAccount"
+        productTypeName: "current-account"
+        typeName: "Current Account"
+        externalProductKindId: "kind1"
+        externalProductId: "current-account"
+      - productKindName: "savingsAccount"
+        productTypeName: "savings-account"
+        typeName: "Savings Accounts"
+        externalProductKindId: "kind2"
+        externalProductId: "savings-account"
+  # Used by legal-entity-bootstrap-task
+  legalEntity:
+    name: "Backbase"
+    realmName: "backbase"
+    externalId: "backbase-bank"
+    legalEntityType: "BANK"
+    referenceJobRoles:
+      - name: "Entitlements - Manager"
+        description: "Full Entitlements administration."
+        functionGroups:
+          - name: "Manage Entitlements"
+            functions:
+              - functionId: "1019"
+                name: "Manage Data Groups"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1020"
+                name: "Manage Function Groups"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1010"
+                name: "Manage Users"
+                privileges:
+                  - privilege: "view"
+              - functionId: "1009"
+                name: "Assign Permissions"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+              - functionId: "1028"
+                name: "Manage Service Agreements"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1119"
+                name: "Manage Self-approve Permissions"
+                privileges:
+                  - privilege: "view"
+              - functionId: "1007"
+                name: "Assign Users"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+              - functionId: "1035"
+                name: "Manage User Profiles"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "edit"
+              - functionId: "1011"
+                name: "Manage Legal Entities"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1034"
+                name: "Manage Identities"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+              - functionId: "1049"
+                name: "Lock User"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+              - functionId: "1050"
+                name: "Unlock User"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+              - functionId: "1084"
+                name: "Revoke access"
+                privileges:
+                  - privilege: "create"
+      - name: "Retail User"
+        description: "Retail User Permissions"
+        functionGroups:
+          - name: "Products and Profile"
+            functions:
+              - functionId: "1006"
+                name: "Product Summary"
+                functionCode: "product.summary"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "edit"
+              - functionId: "1035"
+                name: "Manage User Profiles"
+                functionCode: "manage.user.profiles"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "edit"
+    users:
+      - user:
+          externalId: "admin"
+          fullName: "Backbase Root Admin"
+          identityLinkStrategy: "CREATE_IN_IDENTITY"
+          emailAddress:
+            address: "bbadmin@email.com"
+          mobileNumber:
+            number: "1234567890"
+        referenceJobRoleNames:
+          - "Entitlements - Manager"
+    subsidiaries:
+      - name: "Mastercard"
+        realmName: "mastercard"
+        externalId: "mastercard-bank"
+        legalEntityType: "BANK"
+        subsidiaries:
+          - name: "Sara"
+            realmName: "mastercard"
+            externalId: "sara"
+            legalEntityType: "CUSTOMER"
+            users:
+              - user:
+                  externalId: "sara"
+                  fullName: "Sara Jones"
+                  identityLinkStrategy: "CREATE_IN_IDENTITY"
+                  emailAddress:
+                    address: "sara@email.com"
+                  mobileNumber:
+                    number: "1234567890"
+                referenceJobRoleNames:
+                  - "Retail User"
+            productGroups:
+              - name: "sara-arrangements"
+                description: "Product group containing user arrangements"
+                currentAccounts:
+                  - externalId: "aa:q648383844dhhfHhTV"
+                    bankBranchCode: "597926"
+                    BBAN: "142576387"
+                    name: "SandboxASPSP1 Account 1"
+                    accountHolderName: "Holder Name 1 Personal Inc"
+                    productTypeExternalId: "current-account"
+                    currency: "GBP"
+                    creditAccount: "true"
+                    debitAccount: "true"
+                savingAccounts:
+                  - externalId: "aFR41134ds844a:45dfF43"
+                    bankBranchCode: "607926"
+                    BBAN: "242576387"
+                    name: "SandboxASPSP1 Account 2"
+                    accountHolderName: "Holder Name 2 Business Inc"
+                    productTypeExternalId: "savings-account"
+                    currency: "GBP"
+                    creditAccount: "true"
+                    debitAccount: "true"
+                  - externalId: "7y56s5:22Aa:6asdhTVC"
+                    bankBranchCode: "617926"
+                    BBAN: "342576387"
+                    name: "SandboxASPSP1 Account 3"
+                    accountHolderName: "Holder Name 3 Personal Inc"
+                    productTypeExternalId: "savings-account"
+                    currency: "GBP"
+                    creditAccount: "true"
+                    debitAccount: "true"

@@ -1,0 +1,170 @@
+{
+  "realm": "mastercard",
+  "enabled": true,
+  "attributes": {
+    "frontendUrl": "http://host.docker.internal:8180/auth"
+  },
+  "roles": {
+    "realm": [
+      {
+        "name": "ROLE_USER",
+        "description": "User privileges"
+      },
+      {
+        "name": "ROLE_ADMIN",
+        "description": "Administrator privileges"
+      }
+    ]
+  },
+  "defaultRoles": [
+    "ROLE_USER"
+  ],
+  "clients": [
+    {
+      "clientId": "bb-web-client",
+      "enabled": true,
+      "publicClient": true,
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "defaultClientScopes": [
+        "mastercard"
+      ]
+    },
+    {
+      "clientId": "bb-tooling-client",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "defaultClientScopes": [
+        "mastercard"
+      ]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "mastercard",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "authorities",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "consentId",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "consentId",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "consentId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "aspspId",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "aspspId",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "aspspId",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "mastercard",
+      "displayName": "Mastercard OpenBanking Connect",
+      "providerId": "oidc",
+      "enabled": true,
+      "updateProfileFirstLoginMode": "on",
+      "trustEmail": false,
+      "storeToken": false,
+      "addReadTokenRoleOnCreate": false,
+      "authenticateByDefault": false,
+      "linkOnly": false,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "userInfoUrl": "http://host.docker.internal:8081/userinfo",
+        "validateSignature": "true",
+        "clientId": "keycloak-broker-client",
+        "tokenUrl": "http://host.docker.internal:8081/oauth2/token",
+        "authorizationUrl": "http://host.docker.internal:8081/oauth2/authorize",
+        "clientAuthMethod": "client_secret_basic",
+        "jwksUrl": "http://host.docker.internal:8081/oauth2/jwks",
+        "syncMode": "FORCE",
+        "clientSecret": "secret",
+        "issuer": "http://host.docker.internal:8081",
+        "useJwksUrl": "true"
+      }
+    }
+  ],
+  "identityProviderMappers": [
+    {
+      "name": "aspspId",
+      "identityProviderAlias": "mastercard",
+      "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+      "config": {
+        "syncMode": "INHERIT",
+        "claim": "aspspId",
+        "user.attribute": "aspspId"
+      }
+    },
+    {
+      "name": "consentId",
+      "identityProviderAlias": "mastercard",
+      "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+      "config": {
+        "syncMode": "INHERIT",
+        "claim": "consentId",
+        "user.attribute": "consentId"
+      }
+    }
+  ]
+}
