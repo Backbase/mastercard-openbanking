@@ -12,11 +12,16 @@ brew install colima docker docker-compose docker-credential-helper
 colima start --cpu 4 --memory 16
 ```
 
-- Backbase Repository Credentials, use your Backbase credentials to login to the Backbase repo:
+- Backbase Repository Credentials - use your Backbase credentials to log in to the Backbase repo:
 ```shell
 docker login repo.backbase.com
 ```
-> If connected to the VPN you can also login to harbor: `docker login harbor.backbase.eu`
+> If connected to the VPN you can also log in to harbor: `docker login harbor.backbase.eu`
+
+- Host configuration - Make sure that the host gateway name is accessible not only by the docker containers but also from the host, to do that just make sure it is configured in the `/etc/hosts` file:
+```shell
+echo '127.0.0.1 host.docker.internal' | sudo tee -a /etc/hosts
+```
 
 ## Steps
 
@@ -39,7 +44,7 @@ docker compose up -d
 docker compose --profile=bootstrap up -d
 ```
 
-> **Heads up**: The images `harbor.backbase.eu/development/employee-web-app-essentials` and `harbor.backbase.eu/development/retail-banking-app-usa` are not publicly available, you can [build them](../images/README.md) or pull them from Harbor using the VPN.
+> **Heads up**: The images `harbor.backbase.eu/development/employee-web-app-essentials` and `harbor.backbase.eu/development/retail-banking-app-usa` are not publicly available, you can [build them](images/README.md) or pull them from Harbor using the VPN.
 
 ### Useful commands
 - Check logs:
@@ -62,12 +67,14 @@ docker kill $(docker ps -q)
 - Edge
 - Registry
 - Identity Server
-    * With `backbase` realm included.
+    * With `backbase` and `mastercard` realms included.
 - Identity Integration
 - Token Converter
 - Access Control
 - Arrangement Manager
 - User Manager
+- Mastercard Authorization Server
+- Mastercard Integration Service
 
 ## Jobs
 
