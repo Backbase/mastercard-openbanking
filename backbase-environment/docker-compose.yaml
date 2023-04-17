@@ -53,6 +53,8 @@ x-resources-limits-defaults: &resources-limits-defaults
     limits:
       memory: 512M
 
+name: mastercard-openbanking
+
 volumes:
   mcob_mysql_data:
     driver: local
@@ -429,80 +431,8 @@ services:
       - ./certs/wiremock/ca-cert.jks:/root/.wiremock/ca-keystore.jks
       - ./stubs:/home/wiremock
 
-  employee-app:
-    container_name: mcob_employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
-    platform: linux/amd64
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-    build:
-      context: images/employee-web-app-essentials
-      secrets:
-        - npm
-    environment:
-      AUTH_URL: http://localhost:8180/auth/
-      API_ROOT: http://localhost:9090/api/
-      PORT: 9090
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./nginx/api.conf:/nginx-config/server/15-api.conf
-    healthcheck:
-      disable: true
-    links:
-      - edge
-
-  retail-app:
-    container_name: mcob_retail_app
-    image: harbor.backbase.eu/development/retail-banking-app-usa:2023.02-LTS
-    platform: linux/amd64
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-    build:
-      context: images/retail-banking-app-usa
-      secrets:
-        - npm
-    environment:
-      API_ROOT: http://localhost:8080/api/
-      AUTH_URL: http://host.docker.internal:8180/auth/realms/mastercard
-      AUTH_EXTERNAL_IDP: mastercard
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./nginx/api.conf:/nginx-config/server/15-api.conf
-    healthcheck:
-      disable: true
-    links:
-      - edge
-
-  business-app:
-    container_name: business_app
-    image: harbor.backbase.eu/development/business-universal:1.0.8
-    platform: linux/amd64
-    deploy:
-      resources:
-        limits:
-          memory: 64M
-    environment:
-      API_ROOT: http://localhost:7070/api/
-      AUTH_URL: http://host.docker.internal:8180/auth/realms/mastercard
-      AUTH_EXTERNAL_IDP: mastercard
-      PORT: 7070
-    ports:
-      - "7070:7070"
-    volumes:
-      - ./nginx/api.conf:/nginx-config/server/15-api.conf
-    healthcheck:
-      disable: true
-    links:
-      - edge
-
   payment-order-service:
-    container_name: payment_order_service
+    container_name: mcob_payment_order_service
     image: repo.backbase.com/backbase-docker-releases/payment-order-service:${BB_VERSION}
     deploy:
       resources:
@@ -535,7 +465,7 @@ services:
       - registry
 
   payment-order-options:
-    container_name: payment_order_options
+    container_name: mcob_payment_order_options
     image: repo.backbase.com/backbase-docker-releases/payment-order-options:${BB_VERSION}
     deploy:
       <<: *resources-limits-defaults
@@ -558,7 +488,7 @@ services:
       - registry
 
   contact-manager:
-    container_name: contact_manager
+    container_name: mcob_contact_manager
     image: repo.backbase.com/backbase-docker-releases/contact-manager:${BB_VERSION}
     deploy:
       resources:
@@ -580,3 +510,54 @@ services:
     links:
       - activemq
       - registry
+
+  employee-app:
+    container_name: mcob_employee_app
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
+    platform: linux/amd64
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    build:
+      context: images/employee-web-app-essentials
+      secrets:
+        - npm
+    environment:
+      AUTH_URL: http://localhost:8180/auth/
+      API_ROOT: http://localhost:9090/api/
+      PORT: 9090
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./nginx/api.conf:/nginx-config/server/15-api.conf
+    healthcheck:
+      disable: true
+    links:
+      - edge
+
+  business-app:
+    container_name: mcob_business_app
+    image: harbor.backbase.eu/development/business-universal:1.0.8
+    platform: linux/amd64
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    build:
+      context: images/business-banking-app-universal
+      secrets:
+        - npm
+    environment:
+      API_ROOT: http://localhost:7070/api/
+      AUTH_URL: http://host.docker.internal:8180/auth/realms/mastercard
+      AUTH_EXTERNAL_IDP: mastercard
+      PORT: 7070
+    ports:
+      - "7070:7070"
+    volumes:
+      - ./nginx/api.conf:/nginx-config/server/15-api.conf
+    healthcheck:
+      disable: true
+    links:
+      - edge
