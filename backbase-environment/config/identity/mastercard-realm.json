@@ -1,9 +1,6 @@
 {
   "realm": "mastercard",
   "enabled": true,
-  "attributes": {
-    "frontendUrl": "http://host.docker.internal:8180/auth"
-  },
   "roles": {
     "realm": [
       {

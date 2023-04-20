@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "id": "611x5",
+      "name": "user-profile-manager",
+      "port": 8000,
+      "rootDir": "user-profile-manager"
+    },
+    {
+      "id": "v24vj",
+      "name": "communications-outbound-integration-service",
+      "port": 8001,
+      "rootDir": "communications-outbound-integration-service"
+    }
+  ]
+}

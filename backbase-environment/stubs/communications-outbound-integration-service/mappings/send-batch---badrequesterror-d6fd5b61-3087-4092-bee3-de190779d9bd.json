@@ -1,0 +1,55 @@
+{
+  "id" : "d6fd5b61-3087-4092-bee3-de190779d9bd",
+  "name" : "Send batch. - badRequestError",
+  "request" : {
+    "urlPath" : "/service-api/v1/communications/batches",
+    "method" : "POST"
+  },
+  "response" : {
+    "status" : 400,
+    "body" : "{\n  \"message\": \"Resource not found.\",\n  \"key\": \"GENERAL_ERROR\",\n  \"errors\": [\n    {\n      \"message\": \"Unable to find the resource requested resource: {resource}.\",\n      \"key\": \"common.api.resource\",\n      \"context\": {\n        \"resource\": \"aResource\"\n      }\n    }\n  ]\n}",
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "d6fd5b61-3087-4092-bee3-de190779d9bd",
+  "persistent" : true,
+  "priority" : 5,
+  "metadata" : {
+    "mocklab" : {
+      "created" : {
+        "at" : "2023-04-18T14:08:10.063285662Z",
+        "via" : "OAS3_IMPORT"
+      },
+      "oas" : {
+        "operationId" : "postBatches",
+        "schema" : {
+          "title" : "BadRequestError",
+          "type" : "object",
+          "required" : [ "message", "key" ],
+          "properties" : {
+            "message" : {
+              "type" : "string",
+              "description" : "Any further information",
+              "minLength" : 1
+            },
+            "key" : {
+              "type" : "string",
+              "description" : "Error summary",
+              "minLength" : 1
+            },
+            "errors" : {
+              "type" : "array",
+              "description" : "Detailed error information",
+              "items" : {
+                "$ref" : "#/components/schemas/ErrorItem"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "insertionIndex" : 0,
+  "postServeActions" : [ ]
+}

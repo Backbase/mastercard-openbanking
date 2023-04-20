@@ -10,6 +10,7 @@ RUN --mount=type=secret,id=npm,dst=./.npmrc npm i --legacy-peer-deps
 
 RUN replace-in-file '${AUTH_URL}realms/${AUTH_REALM}' '${AUTH_URL}' apps/business-universal/src/environments/environment.prod.ts
 RUN replace-in-file 'requireHttps: false,' 'requireHttps: false, customQueryParams: { "kc_idp_hint": "${AUTH_EXTERNAL_IDP}" },' apps/business-universal/src/environments/environment.prod.ts
+RUN replace-in-file "defaultCountry: 'NL'" "defaultCountry: 'GB'" apps/business-universal/**/*.ts
 RUN npm run build
 
 FROM repo.backbase.com/backbase-docker-releases/web-base:1.1.4

@@ -1,0 +1,49 @@
+{
+  "id" : "fbd19375-46f8-43a1-88e7-81c574388f57",
+  "name" : "Send batch. - batchPostResponseBody",
+  "request" : {
+    "urlPath" : "/service-api/v1/communications/batches",
+    "method" : "POST"
+  },
+  "response" : {
+    "status" : 202,
+    "body" : "{\n  \"communicationBatchId\": \"abc123\",\n  \"statuses\": [\n    {\n      \"ref\": \"1\",\n      \"status\": \"sent\"\n    },\n    {\n      \"ref\": \"2\",\n      \"status\": \"pending\"\n    },\n    {\n      \"ref\": \"3\",\n      \"status\": \"failed\",\n      \"error\": {\n        \"code\": \"404\",\n        \"message\": \"Unknown recipient: tanya@example.com\"\n      }\n    }\n  ]\n}",
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "fbd19375-46f8-43a1-88e7-81c574388f57",
+  "persistent" : true,
+  "priority" : 5,
+  "metadata" : {
+    "mocklab" : {
+      "created" : {
+        "at" : "2023-04-18T14:08:10.05507787Z",
+        "via" : "OAS3_IMPORT"
+      },
+      "oas" : {
+        "operationId" : "postBatches",
+        "schema" : {
+          "required" : [ "communicationBatchId" ],
+          "type" : "object",
+          "properties" : {
+            "communicationBatchId" : {
+              "maxLength" : 255,
+              "type" : "string",
+              "description" : "Id of the batch"
+            },
+            "statuses" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/Status"
+              }
+            }
+          },
+          "description" : "Response object for batch send request, that contains info about status of message"
+        }
+      }
+    }
+  },
+  "insertionIndex" : 1,
+  "postServeActions" : [ ]
+}

@@ -1,0 +1,45 @@
+{
+  "id" : "489c2e25-186a-491a-933c-78eb1c9db7e3",
+  "request" : {
+    "urlPathPattern" : "/service-api/v2/users/([\\w-]+)/profile",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "phone-addresses" : [ {
+        "key" : null,
+        "type" : null,
+        "primary" : true,
+        "number" : "1234567890",
+        "additions" : null
+      } ],
+      "electronic-addresses" : [ {
+        "key" : null,
+        "type" : null,
+        "primary" : true,
+        "address" : "{{ request.pathSegments.[3] }}@moustache.com",
+        "additions" : null
+      } ],
+      "postal-addresses" : null,
+      "additions" : null
+    },
+    "headers" : {
+      "X-Content-Type-Options" : "nosniff",
+      "X-XSS-Protection" : "1; mode=block",
+      "Cache-Control" : "no-cache, no-store, max-age=0, must-revalidate",
+      "Pragma" : "no-cache",
+      "Expires" : "0",
+      "X-Frame-Options" : "DENY",
+      "Content-Type" : "application/json",
+      "Date" : "Wed, 26 Oct 2022 12:16:40 GMT",
+      "Keep-Alive" : "timeout=60"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "489c2e25-186a-491a-933c-78eb1c9db7e3",
+  "persistent" : true,
+  "priority" : 5,
+  "insertionIndex" : 0,
+  "postServeActions" : [ ]
+}
