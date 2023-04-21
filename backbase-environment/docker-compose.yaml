@@ -153,7 +153,7 @@ services:
 
   token-converter:
     container_name: mcob_token_converter
-    image: repo.backbase.com/backbase-docker-releases/oidc-token-converter-service:${BB_VERSION}
+    image: harbor.backbase.eu/staging/oidc-token-converter-service:1.4.113.1
     deploy:
       <<: *resources-limits-defaults
     environment:
@@ -164,11 +164,20 @@ services:
       backbase.oidc-token-converter.whitelistedDomains[1].internalHostScheme: http
       backbase.oidc-token-converter.whitelistedDomains[1].internalHost: backbase-identity:8080
       backbase.oidc-token-converter.whitelistedDomains[1].issuerHost: host.docker.internal
-      backbase.token-converter.claimsMapping[1].external: aspspId
-      backbase.token-converter.claimsMapping[1].internal: aspspId
+      backbase.oidc-token-converter.force-jwks-verification-given-matching-claims: true
+      backbase.token-converter.verify-only-no-internal-token: true
       backbase.token-converter.claimsMapping[0].external: consentId
       backbase.token-converter.claimsMapping[0].internal: consentId
-      backbase.token-converter.verify-only-no-internal-token: true
+      backbase.token-converter.claimsMapping[1].external: aspspId
+      backbase.token-converter.claimsMapping[1].internal: aspspId
+      backbase.token-converter.claimsMapping[2].external: tid
+      backbase.token-converter.claimsMapping[2].internal: tid
+      backbase.token-converter.claimsMapping[3].external: act
+      backbase.token-converter.claimsMapping[3].internal: act
+      backbase.token-converter.claimsMapping[4].external: internal_scope
+      backbase.token-converter.claimsMapping[4].internal: scope
+      backbase.token-converter.claimsMapping[5].external: session_state
+      backbase.token-converter.claimsMapping[5].internal: session_id
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -224,7 +233,7 @@ services:
       QUARKUS_JAEGER_PROPAGATION: "b3"
       QUARKUS_HTTP_CORS: "true"
       QUARKUS_HTTP_CORS_EXPOSED_HEADERS: "Location"
-      QUARKUS_HTTP_CORS_ORIGINS: "http://localhost:7070,http://localhost:9090,http://localhost:8280"
+      QUARKUS_HTTP_CORS_ORIGINS: "http://localhost:7070,http://localhost:9090,http://localhost:8080,http://localhost:4200"
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
       KEYCLOAK_HOME_DIR: "/"
@@ -234,6 +243,12 @@ services:
       KEYCLOAK_BACKBASE_CONFIRMATION_URL: "http://confirmation:8080"
       KEYCLOAK_BACKBASE_WEB_AUTHENTICATION_URL: "http://web-authentication:8080"
       KEYCLOAK_BACKBASE_COMMUNICATION_URL: "http://wiremock:8001/service-api/v1/communications/batches"
+      KEYCLOAK_BACKBASE_STEP_UP_MASTERCARD_NAME: "mastercard"
+      KEYCLOAK_BACKBASE_STEP_UP_MASTERCARD_CLIENTS_WEB_NAME: "bb-web-client"
+      KEYCLOAK_BACKBASE_STEP_UP_MASTERCARD_CLIENTS_WEB_ACR_VALUES_GOLD_ACR: "gold"
+      KEYCLOAK_BACKBASE_STEP_UP_MASTERCARD_CLIENTS_WEB_ACR_VALUES_GOLD_PRIORITY: "1"
+      KEYCLOAK_BACKBASE_STEP_UP_MASTERCARD_CLIENTS_WEB_ACR_VALUES_GOLD_DEFAULT: "bb-su:gold"
+      KEYCLOAK_BACKBASE_STEP_UP_MASTERCARD_CLIENTS_WEB_ACR_VALUES_GOLD_PERMISSIBLE_SINGLE: "bb-su:update-user-profile"
       keycloak.hostname.default.frontendUrl: "http://localhost:8180/auth"
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=60.0 -Dkeycloak.migration.strategy=IGNORE_EXISTING -Dkeycloak.migration.action=import -Dkeycloak.profile.feature.upload_scripts=enabled -Dquarkus.log.category.'\"org.keycloak.url\"'.level=DEBUG -Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE -Dquarkus.log.category.'\"org.keycloak.broker\"'.level=TRACE -Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG -Dquarkus.log.category.'\"org.keycloak.services.managers\"'.level=DEBUG"
     volumes:
@@ -361,6 +376,19 @@ services:
       backbase.users.identity-integration-enabled: true
       backbase.users.sync-primary-to-identity-enabled: true
       spring.cloud.discovery.client.simple.instances.user-integration-outbound-service[0].uri: http://wiremock:8000
+      backbase.security.deny-all: false
+      backbase.security.rules-enabled: true
+      backbase.security.rules.update-user-profile.to[0].methods: POST
+      backbase.security.rules.update-user-profile.to[0].paths: /client-api/v2/users/me/profile/electronic-addresses
+      backbase.security.rules.update-user-profile.to[1].methods: PUT
+      backbase.security.rules.update-user-profile.to[1].paths: /client-api/v2/users/me/profile/electronic-addresses/*
+      backbase.security.rules.update-user-profile.to[2].methods: DELETE
+      backbase.security.rules.update-user-profile.to[2].paths: /client-api/v2/users/me/profile/electronic-addresses/*
+      backbase.security.rules.update-user-profile.when.values: bb-su:update-user-profile
+      backbase.security.rules.update-user-profile.when.match: ALL
+      backbase.security.rules.update-user-profile.step-up.acr-values: gold
+      backbase.security.rules.update-user-profile.token: CLIENT
+      backbase.security.rules.update-user-profile.order: 1
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -570,7 +598,6 @@ services:
     environment:
       API_ROOT: http://localhost:7070/api/
       AUTH_URL: http://localhost:8180/auth/realms/mastercard
-      AUTH_EXTERNAL_IDP: mastercard
       PORT: 7070
     ports:
       - "7070:7070"
