@@ -928,7 +928,7 @@
         "clientAuthMethod": "client_secret_basic",
         "jwksUrl": "http://host.docker.internal:8081/oauth2/jwks",
         "syncMode": "FORCE",
-        "clientSecret": "**********",
+        "clientSecret": "secret",
         "issuer": "http://host.docker.internal:8081",
         "useJwksUrl": "true"
       }

@@ -102,7 +102,7 @@ bootstrap:
       - name: "Retail User"
         description: "Retail User Permissions"
         functionGroups:
-          - name: "Products and Profile"
+          - name: "Products and Payments"
             functions:
               - functionId: "1006"
                 name: "Product Summary"
@@ -116,6 +116,46 @@ bootstrap:
                 privileges:
                   - privilege: "view"
                   - privilege: "edit"
+              - functionId: "1005"
+                name: "Contacts"
+                functionCode: "contacts"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1053"
+                name: "A2A Transfer"
+                functionCode: "a2a.transfer"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1002"
+                name: "SEPA CT"
+                functionCode: "payments.sepa"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1074"
+                name: "UK Faster Payments"
+                functionCode: "uk.faster.payments"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
+              - functionId: "1071"
+                name: "Payment Templates"
+                functionCode: "payment.templates"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "create"
+                  - privilege: "edit"
+                  - privilege: "delete"
     users:
       - user:
           externalId: "admin"

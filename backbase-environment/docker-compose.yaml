@@ -455,8 +455,6 @@ services:
       backbase.payments.limits.enabled: false
       backbase.payments.types.FASTER_PAYMENT.business-function: UK Faster Payments
       backbase.payments.types.FASTER_PAYMENT.validation.rules: non-zero-transaction
-      backbase.payments.types.CHAPS.business-function: UK CHAPS
-      backbase.payments.types.CHAPS.validation.rules: non-zero-transaction
       backbase.payments.types.INTERNAL_TRANSFER.business-function: A2A Transfer
       backbase.payments.types.INTERNAL_TRANSFER.validation.rules: non-zero-transaction,has-counterparty,has-counterparty-account-arrangement
       backbase.payments.types.INTERNAL_TRANSFER.confirmation.enabled: true
