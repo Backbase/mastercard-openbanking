@@ -1,0 +1,17 @@
+{
+  "id": "48170194-68de-44ed-af31-5e882e0899e4",
+  "name": "service-api_contentstream_repositoryid_objectpath",
+  "request": {
+    "url": "/service-api/contentstream/repositoryId/objectPath",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "Your OTP is ${otp}"
+  },
+  "uuid": "48170194-68de-44ed-af31-5e882e0899e4",
+  "persistent": true,
+  "priority": 5,
+  "insertionIndex": 0,
+  "postServeActions": []
+}

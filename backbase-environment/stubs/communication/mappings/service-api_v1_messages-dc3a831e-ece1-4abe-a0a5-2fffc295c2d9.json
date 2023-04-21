@@ -1,0 +1,16 @@
+{
+  "id": "dc3a831e-ece1-4abe-a0a5-2fffc295c2d9",
+  "name": "service-api_v1_messages",
+  "request": {
+    "url": "/service-api/v1/messages",
+    "method": "POST"
+  },
+  "response": {
+    "status": 202
+  },
+  "uuid": "dc3a831e-ece1-4abe-a0a5-2fffc295c2d9",
+  "persistent": true,
+  "priority": 5,
+  "insertionIndex": 2,
+  "postServeActions": []
+}
