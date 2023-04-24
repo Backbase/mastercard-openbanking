@@ -1,6 +1,6 @@
 # Mastercard OpenBanking Connect - Backbase POC
 
-In this repository we are implementing the Mastercard OpenBanking Connect APIs to provide OIDC authentication and implementing Backbase contracts to serve account and payments services.
+In this repository we are implementing the [Mastercard OpenBanking Connect](https://developer.mastercard.com/open-banking-connect/documentation/) APIs to provide OIDC authentication and implementing Backbase contracts to serve account and payments services.
 
 The custom implement components are:
 - [OAuth2/OIDC Authorization Server](https://github.com/Backbase/authorization-server)
