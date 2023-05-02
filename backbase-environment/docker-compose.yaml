@@ -215,6 +215,7 @@ services:
       mysql:
         condition: service_healthy
     links:
+      - activemq
       - registry
 
   backbase-identity:
@@ -273,7 +274,7 @@ services:
         limits:
           memory: 1024M
     environment:
-      <<: [*common-variables, *message-broker-variables, *database-variables]
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
       spring.datasource.url: jdbc:mysql://mysql:3306/access-control?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
@@ -295,7 +296,7 @@ services:
         limits:
           memory: 1024M
     environment:
-      <<: [*common-variables, *message-broker-variables, *database-variables]
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
       spring.datasource.url: jdbc:mysql://mysql:3306/arrangement-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       backbase.communication.services.account.integration.service-id: mastercard-integration-service
 #      spring.cloud.discovery.client.simple.instances.account-integration-service[0].uri: http://host.docker.internal:9999
@@ -347,6 +348,10 @@ services:
       mastercard.mcob.ais.aspsps[0].id: 420e5cff-0e2a-4156-991a-f6eeef0478cf
       mastercard.mcob.ais.aspsps[0].available-consents[0].user.username: sara
       mastercard.mcob.ais.aspsps[0].available-consents[0].user.roles: USER
+      mastercard.mcob.ais.aspsps[1].id: 6bc896b5-1b5a-473a-a1d8-dfd3aaa4fab5
+      mastercard.mcob.ais.aspsps[1].consent-validity: P2D
+      mastercard.mcob.ais.aspsps[1].available-consents[0].user.username: bob
+      mastercard.mcob.ais.aspsps[1].available-consents[0].user.roles: USER
       management.endpoints.web.exposure.include: '*'
       management.endpoints.enabled-by-default: true
       security.authorization.public-paths: /actuator/**
@@ -376,7 +381,7 @@ services:
         limits:
           memory: 1024M
     environment:
-      <<: [*common-variables, *message-broker-variables, *database-variables]
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       backbase.users.identity-endpoints-enabled: true
       backbase.users.identity-integration-enabled: true
@@ -435,14 +440,18 @@ services:
         limits:
           memory: 1024M
     environment:
-      <<: [*common-variables, *message-broker-variables, *database-variables]
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
       spring.datasource.url: jdbc:mysql://mysql:3306/confirmation?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "-Xmx3M", "-Xmx5M", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/confirmation", "<status>UP</status>" ]
+    depends_on:
+      mysql:
+        condition: service_healthy
     links:
+      - activemq
       - registry
 
   payment-order-service:
@@ -453,16 +462,15 @@ services:
         limits:
           memory: 1024M
     environment:
-      <<: [*common-variables, *message-broker-variables, *database-variables]
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
       spring.datasource.url: jdbc:mysql://mysql:3306/payment-order-service?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       backbase.communication.services.dbs.integration.external.outbound.paymentorder.service-id: mastercard-integration-service
 #      spring.cloud.discovery.client.simple.instances.payment-order-integration-service[0].uri: http://host.docker.internal:9999
       backbase.payments.limits.enabled: false
       backbase.payments.types.FASTER_PAYMENT.business-function: UK Faster Payments
       backbase.payments.types.FASTER_PAYMENT.validation.rules: non-zero-transaction
-      backbase.payments.types.INTERNAL_TRANSFER.business-function: A2A Transfer
-      backbase.payments.types.INTERNAL_TRANSFER.validation.rules: non-zero-transaction,has-counterparty,has-counterparty-account-arrangement
       backbase.payments.types.INTERNAL_TRANSFER.confirmation.enabled: true
+      spring.profiles.include: backbase_universal_retail
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -481,11 +489,9 @@ services:
     deploy:
       <<: *resources-limits-defaults
     environment:
-      <<: [*common-variables, *message-broker-variables]
-      backbase.payment-options.rules.location: "file:/tmp/payment-config/rules-uk.yml"
+      <<: [ *common-variables, *message-broker-variables ]
+      spring.profiles.include: uk
       backbase.payments.types.location: "file:/tmp/payment-config/payment-types-uk.yml"
-      backbase.payments.sanctioned-currencies.location: "file:/tmp/payment-config/sanctioned-currencies-uk.yml"
-      backbase.payments.sanctioned-countries.location: "file:/tmp/payment-config/sanctioned-countries-uk.yml"
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
       - ./config/payments:/tmp/payment-config
@@ -504,7 +510,7 @@ services:
         limits:
           memory: 1024M
     environment:
-      <<: [*common-variables, *message-broker-variables, *database-variables]
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
       spring.datasource.url: jdbc:mysql://mysql:3306/contact-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
