@@ -2,6 +2,7 @@
 
 x-discovery-variables: &discovery-variables
   server.shutdown: graceful
+  server.forward-headers-strategy: framework
   spring.cloud.kubernetes.enabled: false
   eureka.instance.initialStatus: STARTING
   eureka.instance.non-secure-port: 8080
@@ -153,7 +154,7 @@ services:
 
   token-converter:
     container_name: mcob_token_converter
-    image: harbor.backbase.eu/staging/oidc-token-converter-service:1.4.113.1
+    image: repo.backbase.com/backbase-docker-releases/oidc-token-converter-service:${BB_VERSION}
     deploy:
       <<: *resources-limits-defaults
     environment:
@@ -210,6 +211,9 @@ services:
     healthcheck:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/web-authentication", "<status>UP</status>" ]
+    depends_on:
+      mysql:
+        condition: service_healthy
     links:
       - registry
 
@@ -320,6 +324,8 @@ services:
       mastercard.mcob.api.proxy.enabled: false
       mastercard.mcob.api.proxy.host: wiremock
       mastercard.mcob.api.proxy.port: 8080
+      eureka.instance.metadataMap.public: false
+      server.forward-headers-strategy: native
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
       - ./certs/wiremock/cacerts:/etc/ssl/certs/java/cacerts
@@ -420,7 +426,6 @@ services:
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/identity-integration-service", "<status>UP</status>" ]
     links:
       - registry
-      - backbase-identity
 
   confirmation:
     container_name: mcob_confirmation

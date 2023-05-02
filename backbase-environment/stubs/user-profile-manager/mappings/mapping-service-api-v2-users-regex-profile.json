@@ -18,7 +18,7 @@
         "key" : null,
         "type" : null,
         "primary" : true,
-        "address" : "{{ request.pathSegments.[3] }}@moustache.com",
+        "address" : "{{ request.pathSegments.[3] }}@backbase-runtimes.com",
         "additions" : null
       } ],
       "postal-addresses" : null,

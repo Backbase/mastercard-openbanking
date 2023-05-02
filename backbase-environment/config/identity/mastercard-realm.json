@@ -93,7 +93,8 @@
           "realm": [
             "ROLE_USER",
             "offline_access",
-            "uma_authorization"
+            "uma_authorization",
+            "bb:step-up"
           ],
           "client": {
             "account": [

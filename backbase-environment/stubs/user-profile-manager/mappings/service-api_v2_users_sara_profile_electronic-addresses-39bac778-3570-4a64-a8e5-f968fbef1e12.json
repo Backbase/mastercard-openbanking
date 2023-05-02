@@ -7,10 +7,11 @@
   },
   "response" : {
     "status" : 200,
-    "body" : "{\n  \"electronic-addresses\": [\n    {\n      \"key\": \"123\",\n      \"type\": \"email\",\n      \"primary\": \"false\",\n      \"address\": \"test@test.com\"\n    }\n  ]\n}",
+    "body" : "{\n  \"electronic-addresses\": [\n    {\n      \"key\": \"123\",\n      \"type\": \"email\",\n      \"primary\": \"false\",\n      \"address\": \"{{ request.pathSegments.[3] }}@backbase-runtimes.com\"\n    }\n  ]\n}",
     "headers" : {
       "Content-Type" : "application/json"
-    }
+    },
+    "transformers" : [ "response-template" ]
   },
   "uuid" : "39bac778-3570-4a64-a8e5-f968fbef1e12",
   "persistent" : true,
