@@ -71,7 +71,7 @@ secrets:
 services:
   mysql:
     container_name: mcob_mysql
-    image: mysql:8.0.31
+    image: mysql:8.0.33
     deploy:
       resources:
         limits:
@@ -90,7 +90,7 @@ services:
 
   activemq:
     container_name: mcob_activemq
-    image: symptoma/activemq:5.17.3
+    image: symptoma/activemq:5.18.0
     deploy:
       <<: *resources-limits-defaults
     ports:
@@ -143,6 +143,10 @@ services:
       <<: *common-variables
       gateway.actuator.security.enabled: false
       gateway.csrf.enabled: false
+      spring.cloud.gateway.routes[0].id: cards_route
+      spring.cloud.gateway.routes[0].uri: lb://mastercard-integration-service
+      spring.cloud.gateway.routes[0].predicates[0]: Path=/api/cards-presentation-service/**
+      spring.cloud.gateway.routes[0].filters[0]: OrderedRewritePath=/api/cards-presentation-service(?<segment>/?.*), $\{segment}
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
