@@ -1,17 +1,17 @@
 FROM node:16 AS builder
 
-RUN curl -s "https://start.backbase.com/productised/product-business-banking-mobile-universal?version=2023.02-LTS" -o business-banking-app-universal-package.zip
-RUN unzip business-banking-app-universal-package.zip -d /tmp/business-banking-app-universal-package
+RUN --mount=type=secret,id=repo,dst=./.netrc curl --netrc-file .netrc -s "https://repo.backbase.com/artifactory/backbase-releases/com/backbase/apps/business-banking-universal-app/business-banking-universal-app-2023.09.5-LTS.zip" -o business-banking-universal-app-package.zip
+RUN unzip business-banking-universal-app-package.zip -d /tmp/business-banking-universal-app-package
 
-WORKDIR /tmp/business-banking-app-universal-package/web/business-banking-universal-app
+WORKDIR /tmp/business-banking-universal-app-package
 
-RUN npm i -g replace-in-file
-RUN --mount=type=secret,id=npm,dst=./.npmrc npm i --legacy-peer-deps
+RUN npm i -g nx replace-in-file
+RUN --mount=type=secret,id=npm,dst=./.npmrc npm ci --ignore-scripts --legacy-peer-deps
 
 RUN replace-in-file '${AUTH_URL}realms/${AUTH_REALM}' '${AUTH_URL}' apps/business-universal/src/environments/environment.prod.ts
 RUN replace-in-file "defaultCountry: 'NL'" "defaultCountry: 'GB'" "apps/business-universal/**/*.ts"
-RUN npm run build
+RUN nx build business-universal
 
-FROM repo.backbase.com/backbase-docker-releases/web-base:1.1.4
+FROM repo.backbase.com/backbase-docker-releases/web-base:2.0.7
 
-COPY --from=builder /tmp/business-banking-app-universal-package/web/business-banking-universal-app/dist/apps/business-universal /statics
+COPY --from=builder /tmp/business-banking-universal-app-package/dist/apps/business-universal /statics
