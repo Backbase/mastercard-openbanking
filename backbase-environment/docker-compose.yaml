@@ -291,8 +291,12 @@ services:
       backbase.communication.services.account.integration.service-id: mastercard-integration-service
 #      spring.cloud.discovery.client.simple.instances.account-integration-service[0].uri: http://host.docker.internal:9999
       backbase.arrangement.pull-latest-balance: true
+      BACKBASE_ARRANGEMENT_FILTEREDOUTPRODUCTKINDS_0: Pocket
+      BACKBASE_ARRANGEMENT_FILTEREDOUTPRODUCTKINDS_1: Pocket Parent
+      spring.config.additional-location: file:/tmp/application.yml
       logging.level.com.backbase.products.contexts: INFO
     volumes:
+      - ./config/arrangement-manager.yml:/tmp/application.yml
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
@@ -477,7 +481,7 @@ services:
       backbase.payments.types.location: "file:/tmp/payment-config/payment-types-uk.yml"
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
-      - ./config/payments:/tmp/payment-config
+      - ./config/payment-order-options.yml:/tmp/payment-config/payment-types-uk.yml
     healthcheck:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "-Xmx5M", "-Xmx10M", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/payment-order-options", "<status>UP</status>" ]
@@ -512,9 +516,9 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      spring.config.additional-location: file:/tmp/ingestion.yml
+      spring.config.additional-location: file:/tmp/application.yml
     volumes:
-      - ./config/stream/ingestion.yml:/tmp/ingestion.yml
+      - ./config/bootstrap-task.yml:/tmp/application.yml
     depends_on:
       token-converter:
         condition: service_healthy
@@ -528,9 +532,9 @@ services:
     environment:
       <<: *common-variables
       backbase.stream.legalentity.sink.useIdentityIntegration: true
-      spring.config.additional-location: file:/tmp/ingestion.yml
+      spring.config.additional-location: file:/tmp/application.yml
     volumes:
-      - ./config/stream/ingestion.yml:/tmp/ingestion.yml
+      - ./config/bootstrap-task.yml:/tmp/application.yml
     depends_on:
       token-converter:
         condition: service_healthy
