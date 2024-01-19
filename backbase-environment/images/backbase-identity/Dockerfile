@@ -1,5 +1,8 @@
-ARG IDENTITY_BUILDER
+FROM alpine/curl as curl-support
 
+RUN curl -L -s https://github.com/Captain-P-Goldfish/scim-for-keycloak/releases/download/kc-20-b1/scim-for-keycloak-kc-20-b1.jar -o scim-for-keycloak-kc-20-b1.jar
+
+ARG IDENTITY_BUILDER
 FROM $IDENTITY_BUILDER as auth-server-builder
 
 # In this first build-stage we are configuring build-time settings and including project-specific artifacts
@@ -27,6 +30,7 @@ ENV KC_METRICS_ENABLED "false"
 # Include custom realm configuration JSON files in `${kc.home.dir}/data/import/`.  These files will be imported once on first run of
 # Auth Server.
 COPY realms/* /opt/keycloak/data/import/
+COPY --from=curl-support scim-for-keycloak-kc-20-b1.jar /opt/keycloak/providers/scim-for-keycloak.jar
 
 ENV JDK_JAVA_OPTIONS "-XX:+UseG1GC -XX:+AlwaysPreTouch -Dkc.home.dir=/opt/keycloak -Djboss.server.config.dir=/opt/keycloak/conf"
 RUN ["java", "-cp", "/opt/keycloak/lib/quarkus-run.jar:/opt/keycloak/lib/bootstrap/*",\

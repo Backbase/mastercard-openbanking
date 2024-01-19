@@ -152,6 +152,8 @@ services:
 
   token-converter:
     image: repo.backbase.com/backbase-docker-releases/oidc-token-converter-service:${BB_VERSION}
+    ports:
+      - "7779:8080"
     deploy:
       <<: *resources-limits-defaults
     environment:
@@ -376,7 +378,7 @@ services:
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       backbase.users.identity-endpoints-enabled: true
       backbase.users.identity-integration-enabled: true
-      backbase.users.sync-primary-to-identity-enabled: true
+      backbase.users.sync-primary-to-identity-enabled: false
       spring.cloud.discovery.client.simple.instances.user-integration-outbound-service[0].uri: http://wiremock:8000
       backbase.security.deny-all: false
       backbase.security.rules-enabled: true
@@ -396,6 +398,31 @@ services:
     healthcheck:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "-Xmx5M", "-Xmx10M", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/user-manager", "<status>UP</status>" ]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    links:
+      - activemq
+      - registry
+
+  user-profile-manager:
+    image: repo.backbase.com/backbase-docker-releases/user-profile-manager:${BB_VERSION}
+    ports:
+      - "8388:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+    environment:
+      <<: [ *common-variables, *message-broker-variables, *database-variables ]
+      spring.datasource.url: jdbc:mysql://mysql:3306/user-profile-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+      scim.client.server-uri: http://backbase-identity:8080/auth/realms/mastercard/scim/v2/Users
+      scim.client.resource-type: User
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "-Xmx5M", "-Xmx10M", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/user-profile-manager", "<status>UP</status>" ]
     depends_on:
       mysql:
         condition: service_healthy
