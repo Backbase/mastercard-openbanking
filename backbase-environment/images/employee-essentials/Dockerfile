@@ -1,13 +1,14 @@
 FROM node:16 AS builder
 
-RUN curl -s "https://start.backbase.com/productised/product-employee-essentials-web?version=2023.01" -o employee-essentials-package.zip
+RUN --mount=type=secret,id=repo,dst=./.netrc curl --netrc-file .netrc -s "https://repo.backbase.com/artifactory/backbase-releases/com/backbase/apps/employee-app/employee-essentials-2023.09.3-LTS.zip" -o employee-essentials-package.zip
 RUN unzip employee-essentials-package.zip -d /tmp/employee-essentials-package
 
-WORKDIR /tmp/employee-essentials-package/web/employee-essentials
+WORKDIR /tmp/employee-essentials-package
 
-RUN --mount=type=secret,id=npm,dst=./.npmrc npm i --legacy-peer-deps
-RUN npm run build:employee-essentials
+RUN npm i -g nx
+RUN --mount=type=secret,id=npm,dst=./.npmrc npm ci --ignore-scripts --legacy-peer-deps
+RUN nx build employee-essentials
 
-FROM repo.backbase.com/backbase-docker-releases/web-base:1.1.4
+FROM repo.backbase.com/backbase-docker-releases/web-base:2.0.7
 
-COPY --from=builder /tmp/employee-essentials-package/web/employee-essentials/dist/employee-essentials /statics
+COPY --from=builder /tmp/employee-essentials-package/dist/apps/employee-essentials /statics
