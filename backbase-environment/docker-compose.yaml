@@ -30,6 +30,7 @@ x-common-variables: &common-variables
   backbase.security.public.paths: /integration-api/**
   backbase.security.mtls.enabled: false
   server.max-http-header-size: 64KB
+  backbase.http.request-logging-filter.max-payload-length: 5000
 
 x-database-variables: &database-variables
   logging.level.liquibase: INFO
@@ -236,6 +237,7 @@ services:
       KC_SPI_BACKBASE_COMMUNICATION_URL: "http://wiremock:8001/service-api/v1/communications/batches"
       KC_SPI_CONFIRMATION_SERVICE_CLIENT_DEFAULT_URL: "http://confirmation:8080"
       KC_SPI_WEB_AUTHENTICATION_SERVICE_CLIENT_DEFAULT_URL: "http://web-authentication:8080"
+      KC_SPI_CONTENT_SERVICE_CLIENT_DEFAULT_URL: "http://wiremock:8002"
       KC_SPI_CONNECTIONS_JPA_LEGACY_INITIALIZE_EMPTY: "true"
       KC_SPI_CONNECTIONS_JPA_LEGACY_MIGRATION_STRATEGY: "update"
       KC_SPI_STEP_UP_CONFIG_DEFAULT_MASTERCARD_NAME: "mastercard"
@@ -246,7 +248,7 @@ services:
       KC_SPI_STEP_UP_CONFIG_DEFAULT_MASTERCARD_CLIENTS_WEB_ACR_VALUES_GOLD_PERMISSIBLE_SINGLE: "bb-su:update-user-profile"
       QUARKUS_HTTP_CORS: "true"
       QUARKUS_HTTP_CORS_EXPOSED_HEADERS: "Location"
-      QUARKUS_HTTP_CORS_ORIGINS: "http://localhost:7070,http://localhost:9090,http://localhost:8080,http://localhost:4200"
+      QUARKUS_HTTP_CORS_ORIGINS: "http://localhost:8080,http://localhost:9090,http://localhost:4200"
       JAVA_TOOL_OPTIONS: "-Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG \
                           -Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
     volumes:
@@ -564,15 +566,13 @@ services:
         - npm
         - repo
     environment:
+      API_ROOT: /api
       AUTH_URL: http://localhost:8180/auth/
-      API_ROOT: http://localhost:9090/api/
       PORT: 9090
     ports:
       - "9090:9090"
     volumes:
       - ./nginx/api.conf:/nginx-config/server/15-api.conf
-    healthcheck:
-      disable: true
     links:
       - edge
 
@@ -589,14 +589,12 @@ services:
         - npm
         - repo
     environment:
-      API_ROOT: http://localhost:8080/api/
+      API_ROOT: /api/
       AUTH_URL: http://localhost:8180/auth/realms/mastercard
     ports:
       - "8080:8080"
     volumes:
       - ./nginx/api.conf:/nginx-config/server/15-api.conf
-    healthcheck:
-      disable: true
     links:
       - edge
 

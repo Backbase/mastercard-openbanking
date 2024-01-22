@@ -9,6 +9,6 @@ RUN npm i -g nx
 RUN --mount=type=secret,id=npm,dst=./.npmrc npm ci --ignore-scripts --legacy-peer-deps
 RUN nx build employee-essentials
 
-FROM repo.backbase.com/backbase-docker-releases/web-base:2.0.7
+FROM repo.backbase.com/backbase-docker-releases/web-base:2.0.8
 
 COPY --from=builder /tmp/employee-essentials-package/dist/apps/employee-essentials /statics

@@ -17,6 +17,11 @@ ENV KC_TRANSACTION_XA_ENABLED "true"
 ENV KC_HEALTH_ENABLED "true"
 ENV KC_METRICS_ENABLED "false"
 
+# Enabling OpenTelemetry
+ENV QUARKUS_OPENTELEMETRY_ENABLED "true"
+ENV QUARKUS_OPENTELEMETRY_TRACER_ENABLED "true"
+ENV QUARKUS_OPENTELEMETRY_TRACER_EXPORTER_OTLP_ENABLED "true"
+
 # If building an image specifically to run the Liquibase migration and exit (e.g. a Job/initContainer)
 # then override the default cache config to prevent it from joining the Infinispan cluster...
 #     ENV KC_CACHE_CONFIG_FILE "cache-local.xml"
