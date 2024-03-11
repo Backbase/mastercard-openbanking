@@ -12,6 +12,6 @@ RUN replace-in-file '${AUTH_URL}realms/${AUTH_REALM}' '${AUTH_URL}' apps/busines
 RUN replace-in-file "defaultCountry: 'NL'" "defaultCountry: 'GB'" "apps/business-universal/**/*.ts"
 RUN nx build business-universal
 
-FROM repo.backbase.com/backbase-docker-releases/web-base:2.0.7
+FROM repo.backbase.com/backbase-docker-releases/web-base:2.0.8
 
 COPY --from=builder /tmp/business-banking-universal-app-package/dist/apps/business-universal /statics

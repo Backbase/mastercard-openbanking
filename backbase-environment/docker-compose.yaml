@@ -591,6 +591,7 @@ services:
     environment:
       API_ROOT: /api/
       AUTH_URL: http://localhost:8180/auth/realms/mastercard
+      FALLBACK_LOCALE: en-US
     ports:
       - "8080:8080"
     volumes:
