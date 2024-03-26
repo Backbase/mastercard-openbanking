@@ -311,7 +311,7 @@ services:
       - registry
 
   mastercard-integration-service:
-    image: harbor.backbase.eu/development/mastercard-integration-service:1.3.0
+    image: harbor.backbase.eu/development/mastercard-integration-service:2.0.0
     deploy:
       <<: *resources-limits-defaults
     environment:
@@ -457,7 +457,7 @@ services:
       backbase.communication.services.dbs.integration.external.outbound.paymentorder.service-id: mastercard-integration-service
 #      spring.cloud.discovery.client.simple.instances.payment-order-integration-service[0].uri: http://host.docker.internal:9999
       backbase.payments.limits.enabled: false
-      backbase.payments.types.FASTER_PAYMENT.business-function: UK Faster Payments
+      backbase.payments.types.FASTER_PAYMENT.business-function: A2A Transfer
       backbase.payments.types.FASTER_PAYMENT.validation.rules: non-zero-transaction
       backbase.payments.types.INTERNAL_TRANSFER.confirmation.enabled: true
       spring.profiles.include: backbase_universal_retail

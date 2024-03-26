@@ -4,9 +4,9 @@ backbase:
       types:
         - payment-type: FASTER_PAYMENT
           business-functions:
-            - UK Faster Payments
+            - A2A Transfer
           business-function-payment-type:
-            FASTER_PAYMENT: UK Faster Payments
+            FASTER_PAYMENT: A2A Transfer
           options:
             - instruction-priority: NORM
               transfer-fee:
@@ -23,9 +23,9 @@ backbase:
             - "instructed-amount-amount-less-than-250000"
         - payment-type: CHAPS
           business-functions:
-            - UK CHAPS
+            - A2A Transfer
           business-function-payment-type:
-            CHAPS: UK CHAPS
+            CHAPS: A2A Transfer
           options:
             - instruction-priority: NORM
               transfer-fee:
