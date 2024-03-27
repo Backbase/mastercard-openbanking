@@ -577,7 +577,7 @@ services:
       - edge
 
   business-app:
-    image: harbor.backbase.eu/development/business-universal:2023.09.5-LTS
+    image: harbor.backbase.eu/development/business-universal:2024.03-LTS
     platform: linux/amd64
     deploy:
       resources:
