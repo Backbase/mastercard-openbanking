@@ -7,3 +7,7 @@ The custom implement components are:
 - [Mastercard Integration Service](https://github.com/Backbase/mastercard-integration-service)
 
 These components are configured to run in a preset [Backbase environment](backbase-environment) that is available to be executed using docker compose, instructions are detailed in there.
+
+## License
+
+This is a proof-of-concept implementation for integration purposes. Do not use it in production.
